@@ -1,0 +1,155 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Inframind Cloudformation Template",
+  "Mappings": {
+    "Linux2ImageId": {
+      "us-east-2": {
+        "linux": "ami-02e680c4540db351e",
+        "windows": "ami-0170ffc1abff2ebdc"
+      },
+      "us-east-1": {
+        "linux": "ami-009d6802948d06e52",
+        "windows": "ami-041114ddee4a98333"
+      },
+      "us-west-1": {
+        "linux": "ami-011b6930a81cd6aaf",
+        "windows": "ami-01238fbae24a14ace"
+      },
+      "us-west-2": {
+        "linux": "ami-01bbe152bf19d0289",
+        "windows": "ami-019e99815e07ceb49"
+      },
+      "ap-south-1": {
+        "linux": "ami-06bcd1131b2f55803",
+        "windows": "ami-07e6b11175e3fa715"
+      },
+      "ap-northeast-2": {
+        "linux": "ami-0b4fdb56a00adb616",
+        "windows": "ami-05ec63f885e1c6f2a"
+      },
+      "ap-southeast-1": {
+        "linux": "ami-0b84d2c53ad5250c2",
+        "windows": "ami-04385f3f533c85af7"
+      },
+      "ap-southeast-2": {
+        "linux": "ami-08589eca6dcc9b39c",
+        "windows": "ami-02e3986f071e14a71"
+      },
+      "ap-northeast-1": {
+        "linux": "ami-0a2de1c3b415889d2",
+        "windows": "ami-0f57a86f53aa1c4ea"
+      },
+      "ca-central-1": {
+        "linux": "ami-076b4adb3f90cd384",
+        "windows": "ami-0ee0c966a33759216"
+      },
+      "eu-central-1": {
+        "linux": "ami-034fffcc6a0063961",
+        "windows": "ami-014b173b0f52c004e"
+      },
+      "eu-west-1": {
+        "linux": "ami-09693313102a30b2c",
+        "windows": "ami-0dad95819a9372f76"
+      },
+      "eu-west-2": {
+        "linux": "ami-0274e11dced17bb5b",
+        "windows": "ami-06a27ce600d784c71"
+      },
+      "eu-west-3": {
+        "linux": "ami-051707cdba246187b",
+        "windows": "ami-0a729892011f4185b"
+      },
+      "eu-north-1": {
+        "linux": "ami-07ec6279",
+        "windows": "ami-026aa62df198e6f8a"
+      },
+      "sa-east-1": {
+        "linux": "ami-0112d42866980b373",
+        "windows": "ami-0d44cef69e0b580f4"
+      }
+    }
+  },
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": ""
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway"
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      }
+    },
+    "PublicRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VPCGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable HTTP ingress",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "SNS": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "Subscription": [
+          {
+            "Endpoint": "ganeshkolt05@gmail.com",
+            "Protocol": "email"
+          }
+        ]
+      }
+    }
+  }
+}
