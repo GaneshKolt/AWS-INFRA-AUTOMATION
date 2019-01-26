@@ -1,0 +1,168 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Inframind Cloudformation Template",
+  "Mappings": {
+    "Linux2ImageId": {
+      "us-east-2": {
+        "linux": "ami-0f65671a86f061fcd",
+        "windows": "ami-0170ffc1abff2ebdc"
+      },
+      "us-east-1": {
+        "linux": "ami-0ac019f4fcb7cb7e6",
+        "windows": "ami-041114ddee4a98333"
+      },
+      "us-west-1": {
+        "linux": "ami-063aa838bd7631e0b",
+        "windows": "ami-01238fbae24a14ace"
+      },
+      "us-west-2": {
+        "linux": "ami-0bbe6b35405ecebdb",
+        "windows": "ami-019e99815e07ceb49"
+      },
+      "ap-south-1": {
+        "linux": "ami-0d773a3b7bb2bb1c1",
+        "windows": "ami-07e6b11175e3fa715"
+      },
+      "ap-northeast-2": {
+        "linux": "ami-06e7b9c5e0c4dd014",
+        "windows": "ami-05ec63f885e1c6f2a"
+      },
+      "ap-southeast-1": {
+        "linux": "ami-0c5199d385b432989",
+        "windows": "ami-04385f3f533c85af7"
+      },
+      "ap-southeast-2": {
+        "linux": "ami-07a3bd4944eb120a0",
+        "windows": "ami-02e3986f071e14a71"
+      },
+      "ap-northeast-1": {
+        "linux": "ami-07ad4b1c3af1ea214",
+        "windows": "ami-0f57a86f53aa1c4ea"
+      },
+      "ca-central-1": {
+        "linux": "ami-0427e8367e3770df1",
+        "windows": "ami-0ee0c966a33759216"
+      },
+      "eu-central-1": {
+        "linux": "ami-0bdf93799014acdc4",
+        "windows": "ami-014b173b0f52c004e"
+      },
+      "eu-west-1": {
+        "linux": "ami-00035f41c82244dab",
+        "windows": "ami-0dad95819a9372f76"
+      },
+      "eu-west-2": {
+        "linux": "ami-0b0a60c0a2bd40612",
+        "windows": "ami-06a27ce600d784c71"
+      },
+      "eu-west-3": {
+        "linux": "ami-08182c55a1c188dee",
+        "windows": "ami-0a729892011f4185b"
+      },
+      "eu-north-1": {
+        "linux": "ami-34c14f4a",
+        "windows": "ami-026aa62df198e6f8a"
+      },
+      "sa-east-1": {
+        "linux": "ami-03c6239555bb12112",
+        "windows": "ami-0d44cef69e0b580f4"
+      }
+    }
+  },
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": ""
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway"
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      }
+    },
+    "PublicRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VPCGatewayAttachment",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "InstanceSecurityGroup": {
+      "DependsOn" : "VPC"
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable HTTP ingress",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "8",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "SNS": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "Subscription": [
+          {
+            "Endpoint": "ganeshkolt05@gmail.com",
+            "Protocol": "email"
+          }
+        ]
+      }
+    }
+  }
+}
