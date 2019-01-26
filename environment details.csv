@@ -1,0 +1,4 @@
+Instance Type,Instance Class,HardDisk Memory,Harddisk Memory Type,DB Engine,DB Instance Class,DB Name,Allocated Storage,Master User Name,Master User Password,VPC CIDR,Public subnet CIDR,Private Subnet 1 CIDR,Private Subnet 1 CIDR, server start time,server shutdown time
+linux,t2.micro,30,gp2,MySQL,db.t2.micro,User,20,User,User1234,10.0.0.0/16,10.0.1.0/24,10.0.17.0/24,10.0.20.0/24,9:00:00,6:00:00
+linux,t2.micro,30,gp2,,,,,,,10.0.0.0/16,10.0.2.0/24,10.0.18.0/24,10.0.21.0/24,9:00:00,6:00:00
+linux,t2.micro,30,gp2,,,,,,,10.0.0.0/16,10.0.3.0/24,10.0.19.0/24,10.0.22.0/24,9:00:00,6:00:00
