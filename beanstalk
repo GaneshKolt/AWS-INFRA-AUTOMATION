@@ -1,0 +1,55 @@
+import boto3
+
+def lambda_handler(event, context):
+    
+    elb = boto3.client('elasticbeanstalk')
+    s3_resource = boto3.resource('s3')
+
+    app = elb.create_application(
+        ApplicationName='Html-login',
+        Description='html-application'
+    )
+    
+    print(app)
+    
+    app_version = elb.create_application_version(
+        ApplicationName='html-login',
+        VersionLabel='htmllogin',
+        Description='htmlversion',
+        SourceBundle={
+            'S3Bucket': 'htmlphp',
+            'S3Key': 'file.zip'
+        },
+        AutoCreateApplication=False,
+        Process=False
+    )
+    
+    print(app_version)
+    
+    env = elb.create_environment(
+        ApplicationName='html-login',
+        EnvironmentName='html',
+        Description='html-web-page',
+        Tier={
+            'Name': 'WebServer',
+            'Type': 'Standard'
+        },
+        VersionLabel='htmllogin',
+        SolutionStackName="64bit Amazon Linux 2018.03 v2.8.6 running PHP 7.2",
+        OptionSettings=[
+            {
+                'Namespace': 'aws:elasticbeanstalk:environment',
+                'OptionName': 'EnvironmentType',
+                'Value': 'SingleInstance'
+            },
+            {
+                'Namespace': 'aws:autoscaling:launchconfiguration',
+                'OptionName': 'IamInstanceProfile',
+                'Value': 'aws-elasticbeanstalk-ec2-role'
+            },
+        ]
+    )
+    print(env)
+    print("Done")
+    
+    
