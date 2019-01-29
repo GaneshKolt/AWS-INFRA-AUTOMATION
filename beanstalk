@@ -5,6 +5,7 @@ def lambda_handler(event, context):
     elb = boto3.client('elasticbeanstalk')
     s3_resource = boto3.resource('s3')
 
+    #Create Application
     app = elb.create_application(
         ApplicationName='Html-login',
         Description='html-application'
@@ -12,6 +13,7 @@ def lambda_handler(event, context):
     
     print(app)
     
+    #Create Apllication Version
     app_version = elb.create_application_version(
         ApplicationName='html-login',
         VersionLabel='htmllogin',
@@ -26,6 +28,7 @@ def lambda_handler(event, context):
     
     print(app_version)
     
+    #Create Environment
     env = elb.create_environment(
         ApplicationName='html-login',
         EnvironmentName='html',
